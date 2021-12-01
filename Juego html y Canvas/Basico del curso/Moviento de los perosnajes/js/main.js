@@ -106,8 +106,15 @@ function move(){
 }
 //Colisiones funcion SI EL PERSONAJE CHOCA CON EL ENEMIGO SE LE RESTA UNA VIDA
 function colision(){
-    if(personaje1.posY-personaje1.alto < enemigo1.posY &&
-        personaje1.posX-personaje1.ancho < enemigo1.posX
+    if( personaje1.posY-personaje1.alto < enemigo1.posY &&
+        personaje1.posX-personaje1.ancho < enemigo1.posX &&
+        personaje1.posY > enemigo1.posY &&
+        personaje1.posX+personaje1.ancho > enemigo1.posX
+        ||
+        personaje1.posY > enemigo1.posY-enemigo1.alto &&
+        personaje1.posX > enemigo1.posX-enemigo1.ancho &&
+        personaje1.posY < enemigo1.posY &&
+        personaje1.posX < enemigo1.posX+enemigo1.ancho
     ){
         //this.posY+=0
         personaje1.posY=270
