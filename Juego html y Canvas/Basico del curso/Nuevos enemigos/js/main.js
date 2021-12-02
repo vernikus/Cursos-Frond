@@ -8,7 +8,7 @@ accountentLifes.innerHTML = lifes
 canvas.width = 300;
 canvas.height = 300;
 canvas.style.border = '5px solid #000000';
-//Este array es para pintar el escenario se recorre en x y y cada 0 lo pinta de un color
+
 let escenario = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -42,7 +42,6 @@ const Enemigos = function (posX, posY, ancho, alto, color, speed) {
         this.alto = alto,
         this.color = color,
         this.speed = speed,
-        //Se declara una nueva variable que se inicializa en true para el movimiento
         this.rigth = true,
         this.dibuja = function () {
             ctx.fillStyle = this.color;
@@ -62,11 +61,32 @@ const Enemigos = function (posX, posY, ancho, alto, color, speed) {
                     return this.rigth = true;
                 };
             };
-        };
+        }
+        //Se cambio la funcion de colision a la clase para que cada instancia tenga el metodo
+        this.colision = function(){
+            if( personaje1.posY-personaje1.alto < this.posY &&
+                personaje1.posX-personaje1.ancho < this.posX &&
+                personaje1.posY > enemigo1.posY &&
+                personaje1.posX+personaje1.ancho > this.posX
+                ||
+                personaje1.posY > this.posY-this.alto &&
+                personaje1.posX > this.posX-this.ancho &&
+                personaje1.posY < this.posY &&
+                personaje1.posX < this.posX+this.ancho
+            ){
+                personaje1.posY=270
+                lifes--;
+                accountentLifes.innerHTML = lifes;
+                if(lifes === 0){
+                    console.log('Estas muerto')
+                }
+            }
+        }
 };
-const personaje1 = new Personajes(135, 270, 30, 30, 'blue', 6);
-const enemigo1 = new Enemigos(0, 135, 30, 30, 'red', 2);
-//Funcion que crea el fondo
+const personaje1 = new Personajes(135, 270, 30, 30, 'blue', 10);
+const enemigo1 = new Enemigos(0, 60, 30, 30, 'red', 5);
+const enemigo2 = new Enemigos(300, 120, 30, 30, 'red', 5);
+const enemigo3 = new Enemigos(0, 180, 30, 30, 'red', 5);
 function backGrounnd() {
     for (let indexY = 0; indexY < 10; indexY++) {
         for (let indexX = 0; indexX < 10; indexX++) {
@@ -77,15 +97,12 @@ function backGrounnd() {
         }
     }
 }
-//Creamos una funcion que actualice al canvas para que se vea la animacioln
 function refresh() {
     canvas.width = 300;
     canvas.height = 300;
 }
-//Movimientos del personaje
 function move(){
     window.addEventListener('keydown',(event)=>{
-        //event.preventDefault()
         if(event.key === 'w'||event.key==='W'){
             if(personaje1.posY > 0){
                 personaje1.posY-=personaje1.speed;
@@ -104,40 +121,27 @@ function move(){
         }
     });
 }
-//Colisiones funcion SI EL PERSONAJE CHOCA CON EL ENEMIGO SE LE RESTA UNA VIDA
-function colision(){
-    if( personaje1.posY-personaje1.alto < enemigo1.posY &&
-        personaje1.posX-personaje1.ancho < enemigo1.posX &&
-        personaje1.posY > enemigo1.posY &&
-        personaje1.posX+personaje1.ancho > enemigo1.posX
-        ||
-        personaje1.posY > enemigo1.posY-enemigo1.alto &&
-        personaje1.posX > enemigo1.posX-enemigo1.ancho &&
-        personaje1.posY < enemigo1.posY &&
-        personaje1.posX < enemigo1.posX+enemigo1.ancho
-    ){
-        personaje1.posY=270
-        lifes--;
-        accountentLifes.innerHTML = lifes;
-        // console.log(personaje1.posY)
-        // console.log(enemigo1.posY)
-        // console.log(enemigo1.posX)
-        // console.log(enemigo1.posY)
-        if(lifes === 0){
-            console.log('Estas muerto')
-        }
+function win(){
+    if(personaje1.posY==0){
+        console.log('Congratulations you are the cock :V')
     }
 }
+
 function principal() {
     requestAnimationFrame(principal);
     refresh()
-    //Como el fondo tambien se crea cada ves no es necesario un refres
     backGrounnd()
     personaje1.dibuja();
-    //personaje1.move();
     enemigo1.dibuja();
     enemigo1.mover();
-    colision()
+    enemigo1.colision()
+    enemigo2.dibuja();
+    enemigo2.mover();
+    enemigo2.colision()
+    enemigo3.dibuja();
+    enemigo3.mover();
+    enemigo3.colision()
+    win()
 }
 move();
 principal();
